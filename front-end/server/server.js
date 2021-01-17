@@ -2,10 +2,12 @@
 // where your node app starts
 
 // init project
+const path = require("path")
 require('dotenv').config();
 var express = require("express");
 var app = express();
 // http://expressjs.com/en/starter/static-files.html
+//app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("public"));
 
 // http://expressjs.com/en/starter/basic-routing.html
