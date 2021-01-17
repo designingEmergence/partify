@@ -5,7 +5,6 @@
 require('dotenv').config();
 var express = require("express");
 var app = express();
-
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
 
@@ -20,7 +19,7 @@ app.get("/", function(request, response) {
 var SpotifyWebApi = require("spotify-web-api-node");
 
 // Replace with your redirect URI, required scopes, and show_dialog preference
-var redirectUri = `http://localhost:${process.env.PORT}/callback/` || `https://${process.env.PROJECT_DOMAIN}.glitch.me/callback`;
+var redirectUri = (process.env.PORT)?`http://localhost:${process.env.PORT}/callback/`:null || `https://${process.env.PROJECT_DOMAIN}.glitch.me/callback`;
 var scopes = ["user-top-read"];
 var showDialog = true;
 
