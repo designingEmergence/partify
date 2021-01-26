@@ -11,7 +11,7 @@ export default class App extends React.Component {
   };
   
   componentDidMount() {
-    console.log(window.location.hash);
+    console.log(this.state);
     this.parseAccessToken(window.location.hash);
   };
   
@@ -27,13 +27,17 @@ export default class App extends React.Component {
         return init;
       }, {});
     console.log(parsedToken);
-    this.setState({token:parsedToken, authorized:true});
+    if(parsedToken.access_token) {
+      this.setState({token:parsedToken, authorized:true});
+    }
     window.location.hash = '';
   }
 
   logout() {
     console.log('logout');
   };
+
+  //Functional Components
 
   render() {
     const { users } = this.state;
@@ -46,11 +50,11 @@ export default class App extends React.Component {
         </header>
 
         <main>
-        {!this.state.authorized && 
+        {this.state.authorized === false && 
           <Login></Login>
         }
         {this.state.authorized &&
-          <Content></Content> 
+          <Content token={this.state.token}></Content> 
         }
         </main>
       </div>

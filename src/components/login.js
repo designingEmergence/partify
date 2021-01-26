@@ -7,7 +7,7 @@ export default class Login extends React.Component {
 
   };
   componentDidMount() {
-
+    console.log('showing login')
   };
   login() {
     console.log('login');
