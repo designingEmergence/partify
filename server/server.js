@@ -8,20 +8,27 @@ var express = require("express");
 var app = express();
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, "..", "build")));
-app.use(express.static("public"));
+//app.use(express.static("public"));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/views/index.html");
-});
+// app.get("/", function(request, response) {
+//   response.sendFile(__dirname + "/views/index.html");
+// });
 
+app.get("/guest", function(request, response) {
+     response.sendFile(__dirname + "/views/index.html");
+   });
+
+app.get("/host", function(request, response) {
+    response.sendFile(path.join(__dirname, '..', "build/index.html"));
+  });
 //-------------------------------------------------------------//
 
 // init Spotify API wrapper
 var SpotifyWebApi = require("spotify-web-api-node");
 
 // Replace with your redirect URI, required scopes, and show_dialog preference
-var redirectUri = (process.env.PORT)?`http://localhost:${process.env.PORT}/callback/`:null || `https://${process.env.PROJECT_DOMAIN}.glitch.me/callback`;
+var redirectUri = (process.env.PORT)?`http://localhost:${process.env.PORT}/host/callback/`:null || `https://${process.env.PROJECT_DOMAIN}.glitch.me/host/callback`;
 var scopes = ["user-top-read"];
 var showDialog = true;
 
@@ -39,14 +46,14 @@ app.get("/authorize", function(request, response) {
 });
 
 // Exchange Authorization Code for an Access Token
-app.get("/callback", function(request, response) {
+app.get("/host/callback", function(request, response) {
   var authorizationCode = request.query.code;
 
   spotifyApi.authorizationCodeGrant(authorizationCode).then(
     function(data) {
       console.log(data);
       response.redirect(
-        `/#access_token=${data.body["access_token"]}&refresh_token=${
+        `/host#access_token=${data.body["access_token"]}&refresh_token=${
           data.body["refresh_token"]
         }`
       );

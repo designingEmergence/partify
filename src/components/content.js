@@ -26,6 +26,7 @@ export default class Content extends React.Component {
   }
 
   componentDidMount() {
+    console.log('showing content');
     console.log(this.state.accessToken)
     this.getTopTracks();
   }
