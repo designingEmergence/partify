@@ -11,7 +11,6 @@ export default class Host extends React.Component {
   componentDidMount() {
     console.log('showing host')
     this.parseAccessToken(window.location.hash);
-    console.log(this.state)
   };
   parseAccessToken(hash) {
     var parsedToken = hash
@@ -37,7 +36,7 @@ export default class Host extends React.Component {
         {this.state.authorized? 
         <Content
           token={this.state.token}
-        ></Content> : <Login></Login>}
+        ></Content> : <Login host={true} />}
       </div>
     );
   } 

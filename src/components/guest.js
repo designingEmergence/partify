@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import Login from './login.js'
+import Content from './content.js'
 
 
 export default class Guest extends React.Component {
@@ -29,9 +30,28 @@ export default class Guest extends React.Component {
     window.location.hash = '';
   }
 
+  submit() {
+    console.log('submit tracks to host')
+  }
+
+  //functional component
+
   render() {
     return (
-      <Login></Login>
+      <div>
+        {this.state.authorized?
+        <div>
+          <Content
+            token={this.state.token}
+          ></Content>
+          <h3>Submit tracks to host</h3>
+          <button className="btn btn-primary" onClick={this.submit.bind(this)}>
+            Submit
+          </button>
+        </div> :
+        <Login host={false}/> }
+
+      </div>
     );
   } 
 }

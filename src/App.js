@@ -3,7 +3,6 @@ import axios from "axios";
 import Host from "./components/host.js"
 import Guest from "./components/guest.js"
 import Content from "./components/content.js"
-
 import {
   BrowserRouter as Router,
   Switch,

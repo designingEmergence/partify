@@ -4,14 +4,20 @@ import axios from "axios";
 
 export default class Login extends React.Component {
   state = {
-
+    authorizeURL : ''
   };
   componentDidMount() {
     console.log('showing login')
+    if(this.props.host){
+      this.setState({authorizeURL: '/authorize'});
+    }
+    else {
+      this.setState({authorizeURL: '/authorizeGuest'});
+    }
   };
   login() {
-    console.log('login');
-    axios.get('/authorize')
+    const url = this.state.authorizeURL
+    axios.get(url)
       .then(res => {
         console.log(res);
         window.location= res.data;
@@ -20,7 +26,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <button className="btn btn-primary" onClick={this.login}>
+      <button className="btn btn-primary" onClick={this.login.bind(this)}>
         Login
       </button>
     );
