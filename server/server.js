@@ -1,13 +1,9 @@
-// server.js
-// where your node app starts
-
-// init project
+const model = require('./model')
 const path = require("path")
 require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-// http://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -38,6 +34,7 @@ var spotifyApiHost = new SpotifyWebApi({
   clientSecret: process.env.CLIENT_SECRET,
   redirectUri: redirectUriHost
 });
+
 
 var spotifyApiGuest = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
@@ -124,7 +121,8 @@ app.get("/toptracks", function(request, response) {
 });
 
 app.post('/guestTracks', function(request,response){
-  console.log(request.body);
+  console.log(model);
+  model.addTracks(request.body);
   response.send('got em');
 });
 //-------------------------------------------------------------//
