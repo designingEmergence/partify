@@ -2,7 +2,6 @@ import React from "react";
 import axios from "axios";
 
 function RenderTopTracks(props) {
-  console.log(props);
   const tracks = props.tracks;
   const trackItems = tracks.map((track)=>{
     return <li>{track.name} by {track.artists[0].name}</li>
@@ -18,16 +17,18 @@ export default class Content extends React.Component {
   };
 
   getTopTracks() {
-    axios.get('/myendpoint', {
+    axios.get('/toptracks', {
       headers: { "Authorization": `Bearer ${this.state.accessToken}`}
     }).then(res => {
         this.setState({topTracks: res.data.items})
+        if (this.props.sendTopTracks) {
+          this.props.sendTopTracks(res.data.items);
+        }
       })
   }
 
   componentDidMount() {
     console.log('showing content');
-    console.log(this.state.accessToken)
     this.getTopTracks();
   }
   

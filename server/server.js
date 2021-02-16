@@ -4,16 +4,14 @@
 // init project
 const path = require("path")
 require('dotenv').config();
-var express = require("express");
-var app = express();
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, "..", "build")));
-//app.use(express.static("public"));
-
-// http://expressjs.com/en/starter/basic-routing.html
-// app.get("/", function(request, response) {
-//   response.sendFile(__dirname + "/views/index.html");
-// });
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
 
 app.get("/guest", function(request, response) {
   response.sendFile(path.join(__dirname, '..', "build/index.html"));
@@ -65,7 +63,7 @@ app.get("/host/callback", function(request, response) {
 
   spotifyApiHost.authorizationCodeGrant(authorizationCode).then(
     function(data) {
-      console.log(data);
+      //console.log(data);
       response.redirect(
         `/host#access_token=${data.body["access_token"]}&refresh_token=${
           data.body["refresh_token"]
@@ -83,10 +81,9 @@ app.get("/host/callback", function(request, response) {
 
 app.get("/guest/callback", function(request, response) {
   var authorizationCode = request.query.code;
-
   spotifyApiGuest.authorizationCodeGrant(authorizationCode).then(
     function(data) {
-      console.log(data);
+      //console.log(data);
       response.redirect(
         `/guest#access_token=${data.body["access_token"]}&refresh_token=${
           data.body["refresh_token"]
@@ -108,7 +105,7 @@ app.get("/logout", function(request, response) {
   response.redirect("/");
 });
 
-app.get("/myendpoint", function(request, response) {
+app.get("/toptracks", function(request, response) {
   var loggedInSpotifyApi = new SpotifyWebApi();
   console.log(request.headers["authorization"].split(" ")[1]);
   loggedInSpotifyApi.setAccessToken(
@@ -117,7 +114,7 @@ app.get("/myendpoint", function(request, response) {
   // Search for a track!
   loggedInSpotifyApi.getMyTopTracks().then(
     function(data) {
-      console.log(data.body);
+      //console.log(data.body);
       response.send(data.body);
     },
     function(err) {
@@ -126,6 +123,10 @@ app.get("/myendpoint", function(request, response) {
   );
 });
 
+app.post('/guestTracks', function(request,response){
+  console.log(request.body);
+  response.send('got em');
+});
 //-------------------------------------------------------------//
 
 // listen for requests :)

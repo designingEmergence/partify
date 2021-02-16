@@ -7,7 +7,8 @@ import Content from './content.js'
 export default class Guest extends React.Component {
   state = {
     authorized:false,
-    token: null
+    token: null,
+    topTracks: null
   };
   componentDidMount() {
     this.parseAccessToken(window.location.hash);
@@ -23,7 +24,6 @@ export default class Guest extends React.Component {
         }
         return init;
       }, {});
-    console.log(parsedToken);
     if(parsedToken.access_token) {
       this.setState({token:parsedToken, authorized:true});
     }
@@ -32,6 +32,13 @@ export default class Guest extends React.Component {
 
   submit() {
     console.log('submit tracks to host')
+    axios.post('/guestTracks', this.state.topTracks)
+      .then(res => console.log(res))
+  }
+
+  getTopTracks = (data) =>{
+    this.setState({topTracks:data})
+    console.log(this.state.topTracks);
   }
 
   //functional component
@@ -43,6 +50,7 @@ export default class Guest extends React.Component {
         <div>
           <Content
             token={this.state.token}
+            sendTopTracks = {this.getTopTracks}
           ></Content>
           <h3>Submit tracks to host</h3>
           <button className="btn btn-primary" onClick={this.submit.bind(this)}>

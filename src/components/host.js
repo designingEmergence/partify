@@ -23,7 +23,6 @@ export default class Host extends React.Component {
         }
         return init;
       }, {});
-    console.log(parsedToken);
     if(parsedToken.access_token) {
       this.setState({token:parsedToken, authorized:true});
     }
