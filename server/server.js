@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -17,6 +18,8 @@ app.get("/host", function(request, response) {
     response.sendFile(path.join(__dirname, '..', "build/index.html"));
   });
 //-------------------------------------------------------------//
+
+var clients = []
 
 // init Spotify API wrapper
 var SpotifyWebApi = require("spotify-web-api-node");
@@ -34,7 +37,6 @@ var spotifyApiHost = new SpotifyWebApi({
   clientSecret: process.env.CLIENT_SECRET,
   redirectUri: redirectUriHost
 });
-
 
 var spotifyApiGuest = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
@@ -96,8 +98,6 @@ app.get("/guest/callback", function(request, response) {
   );
 });
 
-
-
 app.get("/logout", function(request, response) {
   response.redirect("/");
 });
@@ -122,9 +122,39 @@ app.get("/toptracks", function(request, response) {
 
 app.post('/guestTracks', function(request,response){
   console.log(model);
-  model.addTracks(request.body);
-  response.send('got em');
+  const guestTracks = request.body
+  model.addTracks(guestTracks);
+  response.send(guestTracks);
+  return sendTracksToHost(guestTracks);
 });
+
+app.get('/events', eventsHandler);
+
+function eventsHandler(req, res, next){
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache'
+  };
+  res.writeHead(200, headers);
+  const data = `data: ${JSON.stringify(model.getAllTracks())}\n\n`;
+  res.write(data)
+
+  const clientId = Date.now();
+  const newClient = {
+    id:clientId,
+    res
+  };
+  clients.push(newClient);
+  req.on('close', ()=> {
+    console.log(`${clientId} Connection closed`);
+    clients = clients.filter(c => c.id !== clientId);
+  });
+}
+
+function sendTracksToHost(newTracks) {
+  clients.forEach(c => c.res.write(`data: ${JSON.stringify(model.getAllTracks())}\n\n`))
+}
 //-------------------------------------------------------------//
 
 // listen for requests :)

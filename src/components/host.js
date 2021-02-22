@@ -6,11 +6,13 @@ import Content from './content.js'
 export default class Host extends React.Component {
   state = {
     authorized:false,
-    token: null
+    token: null,
+    listening: false
   };
   componentDidMount() {
     console.log('showing host')
     this.parseAccessToken(window.location.hash);
+    this.connectToTrackListener();
   };
   parseAccessToken(hash) {
     var parsedToken = hash
@@ -27,6 +29,16 @@ export default class Host extends React.Component {
       this.setState({token:parsedToken, authorized:true});
     }
     window.location.hash = '';
+  };
+  connectToTrackListener(){
+    if(!this.state.listening){
+      console.log('connecting to listener');
+      const events = new EventSource('http://localhost:62347/events');
+      events.onmessage = (event) => {
+        console.log(event.data);
+      }
+      this.setState({listening:true});
+    }
   }
 
   render() {

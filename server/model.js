@@ -5,6 +5,11 @@ var addTracks = function(tracks){
   allTracks.push(tracks);
 }
 
+var getAllTracks = function(){
+  return allTracks;
+}
+
 module.exports= {
-  addTracks
+  addTracks,
+  getAllTracks
 }
